@@ -1,0 +1,9 @@
+{
+  "_nota": "VALORES DE REFERENCIA (us-east-1). REEMPLAZAR con los de sa-east-1 de la AWS Pricing Calculator y anotar la fecha de consulta.",
+  "s3_gb_month": 0.023,
+  "s3_put_per_1k": 0.005,
+  "s3_get_per_1k": 0.0004,
+  "ebs_gp3_gb_month": 0.08,
+  "ebs_snapshot_gb_month": 0.05,
+  "ec2_t3_micro_hour": 0.0104
+}

@@ -1,0 +1,4 @@
+# Copia a terraform.tfvars si quieres cambiar algo (el archivo real no se sube al repo).
+region        = "sa-east-1"
+instance_type = "t3.micro"
+ebs_size_gb   = 10

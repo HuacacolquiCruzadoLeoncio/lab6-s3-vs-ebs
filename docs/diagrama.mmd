@@ -1,0 +1,31 @@
+%% Diagrama comparativo UNICO: la misma carga de trabajo contra los dos servicios.
+%% Pegar en https://mermaid.live para exportar PNG/SVG para el PDF. Sin frontend, sin API Gateway, sin Lambdas.
+flowchart LR
+  TF["Terraform<br/>(terraform apply)"]
+
+  subgraph VPC["VPC 10.0.0.0/16 - sa-east-1"]
+    direction LR
+    subgraph AZA["AZ sa-east-1a"]
+      EC2A["EC2-A t3.micro<br/>benchmark.py"]
+      EBS[("EBS gp3 10 GiB<br/>3000 IOPS - 125 MB/s<br/>/mnt/reclamos-ebs")]
+    end
+    subgraph AZB["AZ sa-east-1b"]
+      EC2B["EC2-B t3.micro<br/>benchmark.py"]
+      EBSR[("EBS restaurado<br/>desde snapshot")]
+    end
+    VPCE{{"Gateway Endpoint S3<br/>(recurso de la VPC)"}}
+  end
+
+  S3[("Amazon S3<br/>versionado + SSE-S3<br/>regional, multi-AZ")]
+  SNAP[["Snapshot EBS"]]
+
+  TF -. provisiona .-> VPC
+  TF -. provisiona .-> S3
+  EC2A == "Carril B: write+fsync / read" ==> EBS
+  EC2A -- "Carril A: PutObject / GetObject" --> VPCE
+  EC2B -- "Carril A: PutObject / GetObject" --> VPCE
+  VPCE --> S3
+  EBS -- "T4: create-snapshot" --> SNAP
+  SNAP -- "T4: restore en AZ b" --> EBSR
+  EBSR --- EC2B
+  EC2B -. "T4: attach del volumen original = ZoneMismatch" .-> EBS

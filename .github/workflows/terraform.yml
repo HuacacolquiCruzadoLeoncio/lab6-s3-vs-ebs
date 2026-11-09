@@ -1,0 +1,58 @@
+name: terraform-validate-plan
+
+# CI del laboratorio: valida formato y sintaxis, y (si hay rol OIDC configurado) genera el plan.
+# El apply/destroy se ejecuta localmente con scripts/01_deploy.sh y scripts/99_cleanup.sh,
+# porque el estado es local (laboratorio efímero). Para equipo/producción: backend remoto en S3.
+on:
+  pull_request:
+    paths: ["terraform/**", "scripts/benchmark.py", ".github/workflows/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: sa-east-1
+  TF_IN_AUTOMATION: "true"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9"
+      - name: Formato (informativo)
+        continue-on-error: true
+        run: terraform -chdir=terraform fmt -check -recursive -diff
+      - name: Init y validate
+        run: |
+          terraform -chdir=terraform init -backend=false -input=false
+          terraform -chdir=terraform validate
+      - name: Sintaxis de scripts
+        run: |
+          python3 -m py_compile scripts/benchmark.py scripts/summarize.py scripts/06_cost_estimate.py
+          for f in scripts/*.sh; do bash -n "$f"; done
+
+  plan:
+    needs: validate
+    if: ${{ vars.AWS_ROLE_ARN != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9"
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: |
+          terraform -chdir=terraform init -input=false
+          terraform -chdir=terraform plan -input=false -no-color | tee plan.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: plan.txt
