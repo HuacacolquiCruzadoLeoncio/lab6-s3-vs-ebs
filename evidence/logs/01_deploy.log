@@ -1,0 +1,2 @@
+== terraform init / fmt / validate
+./scripts/lib.sh: line 10: terraform: command not found

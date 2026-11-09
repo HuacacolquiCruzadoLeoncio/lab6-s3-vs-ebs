@@ -1,7 +1,7 @@
 variable "region" {
   description = "Región de AWS (la misma que usa el proyecto de reclamos)."
   type        = string
-  default     = "sa-east-1"
+  default     = "us-east-2"
 }
 
 variable "project" {
@@ -16,13 +16,13 @@ variable "vpc_cidr" {
 }
 
 variable "subnet_a_cidr" {
-  description = "Subred en la primera AZ (sa-east-1a)."
+  description = "Subred en la primera AZ (us-east-2a)."
   type        = string
   default     = "10.0.1.0/24"
 }
 
 variable "subnet_b_cidr" {
-  description = "Subred en la segunda AZ (sa-east-1b)."
+  description = "Subred en la segunda AZ (us-east-2b)."
   type        = string
   default     = "10.0.2.0/24"
 }

@@ -180,7 +180,7 @@ def main():
     ap.add_argument("--bucket")
     ap.add_argument("--prefix", default="bench")
     ap.add_argument("--path", help="directorio dentro del volumen EBS montado")
-    ap.add_argument("--region", default=os.environ.get("AWS_REGION", "sa-east-1"))
+    ap.add_argument("--region", default=os.environ.get("AWS_REGION", "us-east-2"))
     ap.add_argument("--label", required=True, help="ej. ec2a-s3, ec2a-ebs, ec2b-s3")
     ap.add_argument("--runs", type=int, default=3)
     ap.add_argument("--small-count", type=int, default=1000)

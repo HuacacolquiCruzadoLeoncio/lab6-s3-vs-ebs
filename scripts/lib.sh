@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REGION="${AWS_REGION:-sa-east-1}"
+REGION="${AWS_REGION:-us-east-2}"
 export AWS_REGION="$REGION" AWS_DEFAULT_REGION="$REGION" AWS_PAGER=""
 mkdir -p "$ROOT/evidence/logs" "$ROOT/results"
 
