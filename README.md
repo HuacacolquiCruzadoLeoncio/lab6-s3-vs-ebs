@@ -6,7 +6,10 @@ Comparación práctica de **Amazon S3** (almacenamiento de objetos) y **Amazon E
 enfocada en el proyecto *Sistema de Reclamos por Mensajería*: **los adjuntos de un reclamo** (fotos y PDFs de evidencia).
 Todo se despliega con **Terraform** (sin clics) y se mide con **la misma carga** en ambos servicios.
 
-> Este repositorio es independiente del repositorio del proyecto, como pidió el docente.
+Integrantes: 
+Flores Juarez William Henry
+Camilo Poma Harrison Claudio
+Huacacolqui Cruzado Leoncio
 
 ## Qué responde cada prueba
 
